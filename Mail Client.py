@@ -2,19 +2,22 @@ import socket
 import base64
 
 
-def sendmsg(msg):
+def sendmsg(msg, response=True):
     clientSocket.send(msg.encode())
-    recv = clientSocket.recv(1024).decode()
-    return recv
+    if response:
+        recv = clientSocket.recv(1024).decode()
+        return recv
 
 
+subject = "Testing computer networks!"
 msg = "\r\n I love computer networks!"
-
 endmsg = "\r\n.\r\n"
+TOMAIL = "smtpcontesting@outlook.com"
+FROMMAIL = "testing@dtu.dk"
 
-hostName = "smtp-mail.outlook.com"
-mailserver = (hostName, 587)
 
+hostName = "localhost"
+mailserver = (hostName, 25)
 
 # Create socket called clientSocket and establish a TCP connection with mailserver
 
@@ -37,7 +40,9 @@ print("msg after EHLO: " + recv1)
 if recv1[:3] != '250':
     print('250 reply not received from server.')
 
+
 username = "smtpcontesting@outlook.com"
+"""
 password = "Thunderbird720"
 base64_str = ("\x00"+username+"\x00"+password).encode()
 base64_str = base64.b64encode(base64_str)
@@ -45,7 +50,7 @@ authMsg = "AUTH PLAIN ".encode()+base64_str+"\r\n".encode()
 clientSocket.send(authMsg)
 recv_auth = clientSocket.recv(1024)
 print(recv_auth.decode())
-
+"""
 
 
 # Send MAIL FROM command and print server response.
@@ -62,28 +67,28 @@ print (recv3)
 
 
 # Send DATA command and print server response.
-data = "DATA"
-recv4 = "Response after 1st DATA: " + sendmsg(data)
-print(recv4)
+data = "DATA\r\n"
+sendmsg(data, False)
+#recv4 = "Response after 1st DATA: " + sendmsg(data)
+#print(recv4)
 
 
 # Send message data.
 
+sendmsg("Subject:" + subject + "\r\n", False)
+
 msgdata = msg + "\r\n"
-recv5 = "Response after msg DATA: " + sendmsg(msgdata)
-print(recv5)
+sendmsg(msgdata, False)
 
 
 # Message ends with a single period.
 
-recv6 = "Response after end DATA: " + sendmsg(endmsg)
-print(recv6)
+recv4 = "Response after end DATA: " + sendmsg(endmsg)
+print(recv4)
 
 
 # Send QUIT command and get server response.
 
-quitmsg = "QUIT"
-recv7 = "Response after 3rd DATA: " + sendmsg(quitmsg)
-print(recv6)
+sendmsg("QUIT", False)
 
 
