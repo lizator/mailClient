@@ -14,6 +14,8 @@ msg = "\r\n I love computer networks!"
 endmsg = "\r\n.\r\n"
 TOMAIL = "smtpcontesting@outlook.com"
 FROMMAIL = "testing@dtu.dk"
+# if these = None: sending normal email
+picturePath = None
 
 
 hostName = "localhost"
