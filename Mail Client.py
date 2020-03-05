@@ -14,8 +14,8 @@ msg = "\r\n I love computer networks!"
 endmsg = "\r\n.\r\n"
 TOMAIL = "smtpcontesting@outlook.com"
 FROMMAIL = "testing@dtu.dk"
-# if these = None: sending normal email
-picturePath = None
+picName = "testPic.png"
+picPath = "./" + picName
 
 
 hostName = "localhost"
@@ -44,16 +44,9 @@ if recv1[:3] != '250':
 
 
 username = "smtpcontesting@outlook.com"
-"""
-password = "Thunderbird720"
-base64_str = ("\x00"+username+"\x00"+password).encode()
-base64_str = base64.b64encode(base64_str)
-authMsg = "AUTH PLAIN ".encode()+base64_str+"\r\n".encode()
-clientSocket.send(authMsg)
-recv_auth = clientSocket.recv(1024)
-print(recv_auth.decode())
-"""
 
+pic = open(picPath, "rb")
+base64str = base64.b64encode(pic.read())
 
 # Send MAIL FROM command and print server response.
 
@@ -79,6 +72,24 @@ sendmsg(data, False)
 
 sendmsg("Subject:" + subject + "\r\n", False)
 
+# picture
+sendmsg("MIME-Version: 1.0", False)
+sendmsg("Content-Type:multipart/mixed;boundary=\"separator\"", False)
+sendmsg("--separator", False)
+sendmsg("Content-Type:application/octet-stream;name=\"" + picName + "\"", False)
+sendmsg("Content-Type:application/octet-stream;name=\"" + picName + "\"", False)
+sendmsg("Content-Transfer-Encoding:base64", False)
+sendmsg("Content-Disposition:attachment;filename=\"" + picName + "\"", False)
+sendmsg("", False)
+sendmsg(base64str, False)
+sendmsg("", False)
+sendmsg("", False)
+sendmsg("--separator", False)
+sendmsg(" ", False)
+sendmsg(" ", False)
+
+
+# msg
 msgdata = msg + "\r\n"
 sendmsg(msgdata, False)
 
